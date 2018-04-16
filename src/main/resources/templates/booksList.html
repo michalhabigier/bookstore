@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/body.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+<body>
+<div th:include="fragments/header :: header"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <a class="list-group-item" th:href="@{'/books?category=adventure'}">Adventure</a>
+            <a class="list-group-item" th:href="@{'/books?category=criminal'}">Criminal</a>
+            <a class="list-group-item" th:href="@{'/books?category=drama'}">Drama</a>
+            <a class="list-group-item" th:href="@{'/books?category=foreign'}">Foreign</a>
+            <a class="list-group-item" th:href="@{'/books?category=historical'}">Historical</a>
+            <a class="list-group-item" th:href="@{'/books?category=horror'}">Horror</a>
+            <a class="list-group-item" th:href="@{'/books?category=romance'}">Romance</a>
+            <a class="list-group-item" th:href="@{'/books?category=sf'}">Science-Fiction</a>
+            <a class="list-group-item" th:href="@{'/books?category=setbook'}">Set Books</a>
+            <a class="list-group-item" th:href="@{'/books?category=youngadult'}">Young-adult</a>
+            <a class="list-group-item" th:href="@{'/books?category=war'}">War</a>
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-4 col-sm-6" th:each="book : ${books}">
+                <span class="thumbnail">
+                    <img src="http://placehold.it/300x400" alt="..."/>
+                    <span th:text="${book.author} + ' - ' + ${book.title} "></span>
+                    <div class="ratings">
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <p class="price" th:text="${book.price}"></p>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <a href="bookDetails.html" class="btn btn-success btn-xs pull-right"
+                               th:href="@{'/books/'+${book.id}}">Details</a>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-left:30px;">
+        <div class="col-md-offset-3">
+            <div class="row">
+                <ul class="nav nav-pills">
+                    <li class="nav-item" th:each="i : ${#numbers.sequence(0, (books.totalPages)-1)}">
+                        <a th:href="@{books(page=${i})}" th:text="${i}" class="nav-link"
+                           th:classappend="(${currentPage}==${i})? 'active' : ''"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

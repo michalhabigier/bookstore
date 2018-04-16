@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/body.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+<body>
+<div th:include="fragments/header :: header"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-1 col-md-5">
+            <img src="http://placehold.it/450x650" alt="..." class="image-responsive pull-right"/>
+        </div>
+        <div class="col-md-5 col-md-offset-right-1">
+            <h2 style="margin-top: 0; font-size: 40px" th:text="${bookDetails.title}"></h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 style="margin-top: 0"><span th:text="${bookDetails.author}"></span></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2><span th:text="${bookDetails.price}"> PLN</span></h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <a class="btn btn-success btn-full-width"
+                       th:href="@{'/books/{id}/addProduct'(id=${bookDetails.id})}"
+                       th:if="${bookDetails.quantity}>0">Add to Cart</a>
+                </div>
+                <div class="col-md-offset-1 col-md-3 star-rating" style="padding-left: 20px;">
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    <span class="label label-success">0 reviews</span>
+                </div>
+            </div><!-- end row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Post review</h1>
+                    <form th:object="${review}" method="post">
+                        <div class="form-group">
+                                <textarea class="form-control" rows="3" th:field="*{text}"
+                                          sec:authorize="isAuthenticated()" placeholder="Comment">
+                                </textarea>
+                            <textarea class="form-control" rows="3" th:field="*{text}"
+                                      sec:authorize="isAnonymous()" placeholder="Please log in to write a comment">
+                                </textarea>
+                            <div class="star-rating pull-left" style="margin-top: 10px"
+                                 sec:authorize="isAuthenticated()">
+                                <input type="radio" id="star-1" th:value="5" th:field="*{rate}"/>
+                                <label for="star-1"><i class="active fa fa-star" aria-hidden="true"></i> </label>
+                                <input type="radio" id="star-2" th:value="4" th:field="*{rate}"/>
+                                <label for="star-2"><i class="active fa fa-star" aria-hidden="true"></i> </label>
+                                <input type="radio" id="star-3" th:value="3" th:field="*{rate}"/>
+                                <label for="star-3"><i class="active fa fa-star" aria-hidden="true"></i> </label>
+                                <input type="radio" id="star-4" th:value="2" th:field="*{rate}"/>
+                                <label for="star-4"><i class="active fa fa-star" aria-hidden="true"></i> </label>
+                                <input type="radio" id="star-5" th:value="1" th:field="*{rate}"/>
+                                <label for="star-5"><i class="active fa fa-star" aria-hidden="true"></i> </label>
+                            </div>
+                            <button type="submit" style="margin-top: 5px" class="btn btn-success pull-right"
+                                    sec:authorize="isAuthenticated()">Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#description"
+                       aria-controls="description"
+                       role="tab"
+                       data-toggle="tab"
+                    >Description</a>
+                </li>
+                <li role="presentation">
+                    <a href="#features"
+                       aria-controls="features"
+                       role="tab"
+                       data-toggle="tab"
+                    >Features</a>
+                </li>
+                <li role="presentation">
+                    <a href="#notes"
+                       aria-controls="notes"
+                       role="tab"
+                       data-toggle="tab"
+                    >Notes</a>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="description">
+                    <p th:text="${bookDetails.description}"></p>
+                </div>
+                <div role="tabpanel" class="tab-pane top-10" id="features">
+                    ...
+                </div>
+                <div role="tabpanel" class="tab-pane" id="notes">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-offset-1 row col-md-10" style="margin-top:50px;">
+        <div class="panel panel-default">
+            <h2>Reviews</h2>
+            <div class="panel-heading" th:each="review : ${reviews}">
+                <strong><span th:text="${review.author}"></span></strong>
+                <p class="pull-right"><span th:text="${review.date}"></span></p>
+                <div class="panel-body">
+                    <p th:text="${review.text}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
