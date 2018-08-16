@@ -36,14 +36,6 @@
                        th:href="@{'/books/{id}/addProduct'(id=${bookDetails.id})}"
                        th:if="${bookDetails.quantity}>0">Add to Cart</a>
                 </div>
-                <div class="col-md-offset-1 col-md-3 star-rating" style="padding-left: 20px;">
-                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                    <span class="label label-success">0 reviews</span>
-                </div>
             </div><!-- end row -->
             <div class="row">
                 <div class="col-md-12">
@@ -84,31 +76,11 @@
                        data-toggle="tab"
                     >Description</a>
                 </li>
-                <li role="presentation">
-                    <a href="#features"
-                       aria-controls="features"
-                       role="tab"
-                       data-toggle="tab"
-                    >Features</a>
-                </li>
-                <li role="presentation">
-                    <a href="#notes"
-                       aria-controls="notes"
-                       role="tab"
-                       data-toggle="tab"
-                    >Notes</a>
-                </li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="description">
                     <p th:text="${bookDetails.description}"></p>
-                </div>
-                <div role="tabpanel" class="tab-pane top-10" id="features">
-                    ...
-                </div>
-                <div role="tabpanel" class="tab-pane" id="notes">
-                    ...
                 </div>
             </div>
         </div>
@@ -118,10 +90,12 @@
             <h2>Reviews</h2>
             <div class="panel-heading" th:each="review : ${reviews}">
                 <strong><span th:text="${review.author}"></span></strong>
-                <p class="pull-right"><span th:text="${review.date}"></span></p>
+                <p class="pull-right"><strong><span th:text="${review.date}"></span></strong></p>
+                <p class="pull-right"><strong><span th:text="${review.rate} + '/' + '5 '"></span></strong></p>
                 <div class="panel-body">
                     <p th:text="${review.text}"></p>
                 </div>
+
             </div>
         </div>
     </div>

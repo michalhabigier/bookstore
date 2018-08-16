@@ -1,14 +1,12 @@
-package pl.mh.bookstore.service;
+package pl.mh.bookstore.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +15,7 @@ import pl.mh.bookstore.domain.Role;
 import pl.mh.bookstore.domain.User;
 import pl.mh.bookstore.dto.UserDto;
 import pl.mh.bookstore.repository.UserRepository;
+import pl.mh.bookstore.service.UserService;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -25,12 +24,18 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -50,13 +55,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User currentUser() {
-        String username;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails){
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
+       String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.debug("You are logged as {}", username);
         return userRepository.findByLogin(username);
     }
 
@@ -68,9 +68,11 @@ public class UserServiceImpl implements UserService{
         address.setLocality(address.getLocality());
         address.setZipCode(address.getZipCode());
         userRepository.save(user);
+
+        log.debug("Address of user {} has been added successfully", user.getLogin());
     }
 
-    public User save(UserDto userDto){
+    public void save(UserDto userDto){
         User user = new User();
         user.setLogin(userDto.getLogin());
         user.setFirstName(userDto.getFirstName());
@@ -80,26 +82,10 @@ public class UserServiceImpl implements UserService{
         user.setCreatedDate(LocalDate.now());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRoles(Arrays.asList(new Role("ROLE_USER")));
-        return userRepository.save(user);
+
+        log.debug("User {} has been registered successfully", user.getLogin());
+
+        userRepository.save(user);
     }
 
-    @Override
-    public Collection<User> findAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
 }

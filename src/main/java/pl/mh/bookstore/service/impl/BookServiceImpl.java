@@ -1,26 +1,27 @@
-package pl.mh.bookstore.service;
+package pl.mh.bookstore.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import pl.mh.bookstore.configuration.EnumConverter;
+import pl.mh.bookstore.constants.Constants;
 import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.domain.enums.BookCategory;
 import pl.mh.bookstore.dto.BookDto;
 import pl.mh.bookstore.repository.BookRepository;
-
-import java.util.Set;
+import pl.mh.bookstore.service.BookService;
 
 @Service
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl implements BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    private static final int PAGE_SIZE = 12;
+    private final Logger log = LoggerFactory.getLogger(BookServiceImpl.class);
+
+    public BookServiceImpl(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     public Book save(BookDto bookDto) throws RuntimeException{
 
@@ -33,6 +34,7 @@ public class BookServiceImpl implements BookService{
             book.setRate(0.0);
             book.setQuantity(bookDto.getQuantity());
             book.setDescription(bookDto.getDescription());
+            log.debug("Book with title {} of author {} has been added successfully added to shop database{}", bookDto.getTitle(), bookDto.getAuthor());
             return bookRepository.save(book);
         }
         else throw new RuntimeException("This book already exists in database");
@@ -45,32 +47,20 @@ public class BookServiceImpl implements BookService{
         book.setPrice(bookDto.getPrice());
         book.setBookCategory(bookDto.getBookCategory());
         book.setQuantity(bookDto.getQuantity());
+        log.debug("Book with title {} of author {} has been added successfully edited in shop database{}", bookDto.getTitle(), bookDto.getAuthor());
         return bookRepository.save(book);
     }
 
     @Override
-    public Iterable<Book> findAllBooks() {
-        return bookRepository.findAll();
-    }
-
-    @Override
     public Page<Book> viewBooks(Integer pageNumber){
-        return bookRepository.findAll(new PageRequest(pageNumber, PAGE_SIZE));
-    }
-
-    @Override
-    public Book findById(long id) {
-        return bookRepository.findById(id);
-    }
-
-    @Override
-    public void deleteBook(Book book) {
-        bookRepository.delete(book);
+        log.debug("Retrieving page of books");
+        return bookRepository.findAll(new PageRequest(pageNumber, Constants.BOOKS_PER_PAGE));
     }
 
     @Override
     public Page<Book> viewBooksByCategory(Integer pageNumber, BookCategory bookCategory) {
-        PageRequest pageRequest = new PageRequest(pageNumber, PAGE_SIZE);
+        PageRequest pageRequest = new PageRequest(pageNumber, Constants.BOOKS_PER_PAGE);
+        log.debug("Retrieving page of books by {} category", bookCategory.toString());
         return bookRepository.findAllByBookCategory(pageRequest, bookCategory);
     }
 

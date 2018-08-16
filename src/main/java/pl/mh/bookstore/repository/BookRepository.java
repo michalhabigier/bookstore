@@ -10,9 +10,7 @@ import pl.mh.bookstore.domain.enums.BookCategory;
 @Repository
 public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
     Book findById(long id);
-
     Book findBookByAuthorAndTitle(String title, String author);
-
     Page<Book> findAllByBookCategory(Pageable pageable, BookCategory bookCategory);
 }
 

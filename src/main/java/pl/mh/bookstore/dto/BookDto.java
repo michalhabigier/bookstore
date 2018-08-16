@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.web.multipart.MultipartFile;
 import pl.mh.bookstore.domain.enums.BookCategory;
 
 import javax.validation.constraints.NotNull;
@@ -28,8 +27,19 @@ public class BookDto {
 
     private BookCategory bookCategory;
 
-    private MultipartFile bookImage;
-
     @Length(max = 5000)
     private String description;
+
+    public BookDto(String title, String author, BigDecimal price, Integer quantity, Double rate, BookCategory bookCategory, String description) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.quantity = quantity;
+        this.rate = rate;
+        this.bookCategory = bookCategory;
+        this.description = description;
+    }
+
+    public BookDto() {
+    }
 }

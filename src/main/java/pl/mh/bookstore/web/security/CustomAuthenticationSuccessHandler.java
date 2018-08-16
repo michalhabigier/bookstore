@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
         if(roles.contains("ROLE_ADMIN")) {
             getRedirectStrategy().sendRedirect(request, response, adminTargetUrl);
-        } else if (roles.contains("USER")) {
+        } else if (roles.contains("ROLE_USER")) {
             getRedirectStrategy().sendRedirect(request, response, userTargetUrl);
         } else{
             getRedirectStrategy().sendRedirect(request, response, accessDeniedUrl);

@@ -4,15 +4,15 @@ import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.exception.NotEnoughProductsInStockException;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.Set;
 
 public interface ShoppingCartService {
 
-    void addBook(Book book);
+    void addBook(long bookId);
 
-    void removeBook(Book book);
+    void removeBook(long bookId);
 
-    Map<Book, Integer> getBooksInCart();
+    Set<Book> getBooksInCart();
 
     BigDecimal getTotal();
 

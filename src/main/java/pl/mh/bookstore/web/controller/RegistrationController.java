@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.mh.bookstore.domain.User;
 import pl.mh.bookstore.dto.UserDto;
+import pl.mh.bookstore.repository.UserRepository;
 import pl.mh.bookstore.service.UserService;
 
 import javax.validation.Valid;
@@ -16,6 +17,9 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/registration")
 public class RegistrationController {
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private UserService userService;
 
@@ -31,12 +35,12 @@ public class RegistrationController {
 
     @PostMapping
     public String registerUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult result){
-        User emailExist = userService.findByEmail(userDto.getEmail());
+        User emailExist = userRepository.findByEmail(userDto.getEmail());
         if(emailExist!=null){
             result.rejectValue("email", null, "There is already an account registered with this email");
         }
 
-        User loginExist = userService.findByLogin(userDto.getLogin());
+        User loginExist = userRepository.findByLogin(userDto.getLogin());
         if(loginExist!=null){
             result.rejectValue("login", null, "There is already an account registered with this username");
         }

@@ -29,7 +29,7 @@
                             <li><a type="submit" class="btn btn-success" style="width: 70px;height:50px" th:href="@{/shoppingCart}" data-toggle="modal">
                                 <i class="fa fa-shopping-cart"></i></a></li>
                     </ul>
-                    <ul class="nav navbar-nav navbar-right" sec:authorize="hasAuthority('USER')">
+                    <ul class="nav navbar-nav navbar-right" sec:authorize="hasAuthority('ROLE_USER')">
                         <li><a href="#">Account Details</a></li>
                         <li><a th:href="@{/logout}">Logout</a></li>
                         <li><a type="submit" class="btn btn-success" style="width:70px;height:50px" th:href="@{/shoppingCart}" data-toggle="modal">
