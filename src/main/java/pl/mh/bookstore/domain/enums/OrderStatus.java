@@ -2,8 +2,8 @@ package pl.mh.bookstore.domain.enums;
 
 public enum OrderStatus {
     SHIPPED("Shipped"),
-    ACCEPTED("Accepted"),
-    FULFILLED("Fulfilled");
+    NOT_PAID("Accepted"),
+    PAID("Fulfilled");
 
     private final String name;
 

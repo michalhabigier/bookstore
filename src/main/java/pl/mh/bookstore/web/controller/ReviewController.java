@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.dto.ReviewDto;
 import pl.mh.bookstore.repository.BookRepository;
-import pl.mh.bookstore.service.impl.BookServiceImpl;
+import pl.mh.bookstore.service.BookService;
 import pl.mh.bookstore.service.impl.ReviewServiceImpl;
 
 import javax.validation.Valid;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @Controller
 public class ReviewController {
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @Autowired
     private BookRepository bookRepository;
