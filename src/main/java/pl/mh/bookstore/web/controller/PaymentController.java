@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Controller
 public class PaymentController {
 
-
     @GetMapping("/payment")
     public String paymentDetails(){
         return "payment";

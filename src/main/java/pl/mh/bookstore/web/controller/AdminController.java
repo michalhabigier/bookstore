@@ -14,7 +14,7 @@ import pl.mh.bookstore.domain.enums.BookCategory;
 import pl.mh.bookstore.dto.BookDto;
 import pl.mh.bookstore.repository.BookRepository;
 import pl.mh.bookstore.repository.UserRepository;
-import pl.mh.bookstore.service.impl.BookServiceImpl;
+import pl.mh.bookstore.service.BookService;
 
 import javax.validation.Valid;
 
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 public class AdminController {
 
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @Autowired
     private UserRepository userRepository;

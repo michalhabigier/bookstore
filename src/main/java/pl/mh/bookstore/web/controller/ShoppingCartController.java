@@ -16,6 +16,7 @@ public class ShoppingCartController {
     public String shoppingCart(Model model) {
         model.addAttribute("products", orderService.boughtBooks());
         model.addAttribute("total", orderService.getTotal().toString());
+        model.addAttribute("shippingCost", orderService.getShippingCost().toString());
         return "shoppingCart";
     }
 
@@ -26,14 +27,13 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/shoppingCart/removeProduct/{bookId}")
-    public String removeProductFromCart(@PathVariable("bookId") Long bookId, Model model) {
-        //shoppingCartService.removeBook(bookId);
-        //model.addAttribute("products", shoppingCartService.getBooksInCart());
+    public String removeProductFromCart(@PathVariable("bookId") Long bookId) {
+        orderService.removeBook(bookId);
         return "redirect:/shoppingCart";
     }
 
     @GetMapping("/shoppingCart/checkout")
-    public String checkout(Model model) {
+    public String checkout() {
         orderService.checkout();
         return "redirect:/shoppingCart";
     }

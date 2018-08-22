@@ -7,8 +7,10 @@ import java.util.Set;
 
 public interface OrderService {
     void addBook(long bookId);
-    void removeBook(BoughtBook boughtBook);
+    void removeBook(long bookId);
     BigDecimal getTotal();
+    BigDecimal getTotalWithShippingCost();
+    BigDecimal getShippingCost();
     Set<BoughtBook> boughtBooks();
     void checkout();
 }

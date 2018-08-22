@@ -3,6 +3,7 @@ package pl.mh.bookstore.web.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,11 +15,15 @@ import pl.mh.bookstore.service.UserService;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    public SecurityConfig(UserService userService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+        this.userService = userService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,8 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         "/img/**",
                         "/webjars/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/books/**").permitAll()
-                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

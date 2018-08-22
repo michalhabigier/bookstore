@@ -9,22 +9,19 @@ import org.springframework.web.bind.annotation.*;
 import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.dto.ReviewDto;
 import pl.mh.bookstore.repository.BookRepository;
-import pl.mh.bookstore.service.BookService;
-import pl.mh.bookstore.service.impl.ReviewServiceImpl;
+import pl.mh.bookstore.service.ReviewService;
 
 import javax.validation.Valid;
 
 @PreAuthorize("hasRole('ROLE_USER')")
 @Controller
 public class ReviewController {
-    @Autowired
-    private BookService bookService;
 
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
-    private ReviewServiceImpl reviewService;
+    private ReviewService reviewService;
 
     @PostMapping("/books/{id}")
     public String rate(@PathVariable("id") Long id, @ModelAttribute("review") @Valid ReviewDto reviewDto, BindingResult result){

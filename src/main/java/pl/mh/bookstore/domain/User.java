@@ -7,9 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -42,10 +40,7 @@ public class User {
     private Address address;
 
     @OneToMany(mappedBy = "user")
-    private List<Payment> paymentsList = new ArrayList<>();
-
-    /*@OneToMany(mappedBy = "orders")
-    private List<Order> orders = new ArrayList<>();*/
+    private Set<Payment> paymentsList = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

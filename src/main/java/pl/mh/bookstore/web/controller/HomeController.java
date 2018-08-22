@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.mh.bookstore.configuration.EnumConverter;
 import pl.mh.bookstore.domain.enums.BookCategory;
 import pl.mh.bookstore.repository.BookRepository;
-import pl.mh.bookstore.service.impl.BookServiceImpl;
+import pl.mh.bookstore.service.BookService;
 
 @Controller
 public class HomeController {
@@ -19,7 +19,7 @@ public class HomeController {
     private BookRepository bookRepository;
 
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @GetMapping("/books")
     public String booksPage(Model model, @RequestParam(defaultValue = "0") Integer page){
@@ -31,8 +31,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String homePage(Model model){
-        model.addAttribute("bestRated", bookRepository.findAll());
-        model.addAttribute("mostPopular", bookRepository.findAll());
+        model.addAttribute("newest", bookRepository.findFirst3ByOrderByIdDesc());
         return "index";
     }
 
