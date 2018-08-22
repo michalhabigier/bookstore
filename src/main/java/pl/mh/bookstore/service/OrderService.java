@@ -13,4 +13,6 @@ public interface OrderService {
     BigDecimal getShippingCost();
     Set<BoughtBook> boughtBooks();
     void checkout();
+
+    void cartContentCheck();
 }

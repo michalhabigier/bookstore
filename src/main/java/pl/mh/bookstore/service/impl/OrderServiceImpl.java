@@ -10,7 +10,9 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.domain.BoughtBook;
 import pl.mh.bookstore.domain.Order;
+import pl.mh.bookstore.domain.User;
 import pl.mh.bookstore.domain.enums.OrderStatus;
+import pl.mh.bookstore.exception.EmptyCartException;
 import pl.mh.bookstore.repository.BookRepository;
 import pl.mh.bookstore.repository.BoughtBookRepository;
 import pl.mh.bookstore.repository.OrderRepository;
@@ -109,13 +111,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void checkout(){
-        Order order = new Order();
-        log.debug("Creating new order");
-        order.setLocalDate(LocalDate.now());
-        order.setUser(userService.currentUser());
-        order.setBoughtBooks(boughtBooks);
-        order.setTotalCost(getTotalWithShippingCost());
-        order.setOrderStatus(OrderStatus.NOT_PAID);
+        Order order = orderCreation();
         boughtBooks().forEach(o -> o.setOrder(order));
         boughtBookRepository.save(boughtBooks());
         log.debug("Books have been successfully added to an order");
@@ -124,4 +120,21 @@ public class OrderServiceImpl implements OrderService {
         boughtBooks.clear();
     }
 
+    private Order orderCreation() {
+        Order order = new Order();
+        User user = userService.currentUser();
+        log.debug("Creating new order");
+        order.setLocalDate(LocalDate.now());
+        order.setUser(user);
+        order.setBoughtBooks(boughtBooks);
+        order.setTotalCost(getTotalWithShippingCost());
+        order.setOrderStatus(OrderStatus.NOT_PAID);
+        order.setShipmentAddress(user.getAddress());
+        return order;
+    }
+
+    @Override
+    public void cartContentCheck() throws EmptyCartException {
+        if (boughtBooks().isEmpty()) throw new EmptyCartException();
+    }
 }

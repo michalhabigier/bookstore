@@ -1,8 +1,6 @@
 package pl.mh.bookstore.exception;
 
-import pl.mh.bookstore.domain.Book;
-
-public class NotEnoughProductsInStockException extends Exception {
+public class NotEnoughProductsInStockException extends RuntimeException {
 
     private static final String DEFAULT_MESSAGE = "Not enough products in stock";
 

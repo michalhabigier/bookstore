@@ -61,12 +61,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addAddress() {
+    public void addAddress(Address addressDto) {
         User user = currentUser();
         Address address = new Address();
-        address.setAddress(address.getAddress());
-        address.setLocality(address.getLocality());
-        address.setZipCode(address.getZipCode());
+        address.setAddress(addressDto.getAddress());
+        address.setLocality(addressDto.getLocality());
+        address.setZipCode(addressDto.getZipCode());
+        user.setAddress(address);
         userRepository.save(user);
 
         log.debug("Address of user {} has been added successfully", user.getLogin());
