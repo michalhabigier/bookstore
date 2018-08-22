@@ -16,7 +16,6 @@ public class PaymentController {
 
     @GetMapping(value = "/payment/confirm", params = "shippingOption")
     public String completePurchase(@RequestParam ("shippingOption")BigDecimal shippingCost){
-        //paymentService.completePayment(shippingCost);
         return "redirect:/books";
     }
 

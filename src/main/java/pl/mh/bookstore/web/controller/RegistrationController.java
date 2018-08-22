@@ -24,28 +24,28 @@ public class RegistrationController {
     private UserService userService;
 
     @ModelAttribute("user")
-    public UserDto userRegistrationDTO(){
+    public UserDto userRegistrationDTO() {
         return new UserDto();
     }
 
     @GetMapping
-    public String showRegistrationForm(){
+    public String showRegistrationForm() {
         return "registration";
     }
 
     @PostMapping
-    public String registerUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult result){
+    public String registerUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult result) {
         User emailExist = userRepository.findByEmail(userDto.getEmail());
-        if(emailExist!=null){
+        if (emailExist != null) {
             result.rejectValue("email", null, "There is already an account registered with this email");
         }
 
         User loginExist = userRepository.findByLogin(userDto.getLogin());
-        if(loginExist!=null){
+        if (loginExist != null) {
             result.rejectValue("login", null, "There is already an account registered with this username");
         }
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return "registration";
         }
 
