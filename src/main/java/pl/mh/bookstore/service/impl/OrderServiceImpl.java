@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Transactional
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class OrderServiceImpl implements OrderService {
@@ -48,31 +49,36 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addBook(long bookId) {
-        final Book book = bookRepository.findById(bookId);
-        if(!isInCart(book)){
-            BoughtBook boughtBook = new BoughtBook();
-            boughtBook.setAmount(1);
-            boughtBook.setBook(book);
-            boughtBook.setPrice(book.getPrice());
-            boughtBooks.add(boughtBook);
-            log.debug("Added {} to cart", book.getAuthor() + " " + book.getTitle());
+        Book book = bookRepository.findById(bookId);
+        if (isInStock(bookId)) {
+            if (!isInCart(book)) {
+                BoughtBook boughtBook = new BoughtBook();
+                boughtBook.setAmount(1);
+                boughtBook.setBook(book);
+                boughtBook.setPrice(book.getPrice());
+                boughtBooks.add(boughtBook);
+                log.debug("Added {} to cart", book.getAuthor() + " " + book.getTitle());
+            } else {
+                BoughtBook boughtBook = getBoughtBook(book);
+                boughtBook.setAmount(boughtBook.getAmount() + 1);
+                boughtBook.setPrice(boughtBook.getPrice().add(book.getPrice()));
+                log.debug("This book is already in cart. Amount incremented by 1 to {}", boughtBook.getAmount());
+            }
+            decrementAmount(bookId);
         }
-        else{
-            BoughtBook boughtBook = getBoughtBook(book);
-            boughtBook.setAmount(boughtBook.getAmount()+1);
-            boughtBook.setPrice(boughtBook.getPrice().add(book.getPrice()));
-            log.debug("This book is already in cart. Amount incremented by 1 to {}", boughtBook.getAmount());
-        }
+
     }
 
     @Override
     public void removeBook(long bookId) {
-        final Book book = bookRepository.findById(bookId);
+        Book book = bookRepository.findById(bookId);
         if(isInCart(book)){
             BoughtBook boughtBook = getBoughtBook(book);
+            incrementAmount(bookId);
             boughtBooks.remove(boughtBook);
             log.debug("Deleted {} from cart", book.getAuthor() + " " + book.getTitle());
         }
+
     }
 
     @Override
@@ -109,13 +115,13 @@ public class OrderServiceImpl implements OrderService {
         return Collections.unmodifiableSet(boughtBooks);
     }
 
-    @Transactional
     public void checkout(){
         Order order = orderCreation();
         boughtBooks().forEach(o -> o.setOrder(order));
         boughtBookRepository.save(boughtBooks());
         log.debug("Books have been successfully added to an order");
         orderRepository.save(order);
+
         log.debug("Order with {} ID has been successfully added to database", order.getId());
         boughtBooks.clear();
     }
@@ -137,4 +143,22 @@ public class OrderServiceImpl implements OrderService {
     public void cartContentCheck() throws EmptyCartException {
         if (boughtBooks().isEmpty()) throw new EmptyCartException();
     }
+
+    private boolean isInStock(long bookId) {
+        return bookRepository.findById(bookId).getQuantity() > 0;
+    }
+
+    private void decrementAmount(long bookId) {
+        Book book = bookRepository.findById(bookId);
+        book.setQuantity(book.getQuantity() - 1);
+        bookRepository.save(book);
+    }
+
+    private void incrementAmount(long bookId) {
+        Book book = bookRepository.findById(bookId);
+        int count = getBoughtBook(book).getAmount();
+        book.setQuantity(book.getQuantity() + count);
+        bookRepository.save(book);
+    }
+
 }
