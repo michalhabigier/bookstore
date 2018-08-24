@@ -27,16 +27,19 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h2><span th:text="${bookDetails.price}"> PLN</span></h2>
+                    <h2><span th:text="${bookDetails.price}"></span></h2>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-2" th:if="${bookDetails.quantity>0}">
                     <a class="btn btn-success btn-full-width"
-                       th:href="@{'/books/' + ${bookDetails.id} + '/addProduct'}"
-                       th:if="${bookDetails.quantity}>0">Add to Cart</a>
+                       th:href="@{'/books/' + ${bookDetails.id} + '/addProduct'}">Add to Cart</a>
                 </div>
-            </div><!-- end row -->
+                <div class="col-md-2" th:if="${bookDetails.quantity==0}">
+                    <a class="btn btn-success btn-full-width"
+                       th:href="@{'/books/' + ${bookDetails.id} + '/addProduct'}">Not in stock</a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <h1>Post review</h1>

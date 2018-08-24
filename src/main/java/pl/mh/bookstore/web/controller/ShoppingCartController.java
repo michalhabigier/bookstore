@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.mh.bookstore.domain.Address;
+import pl.mh.bookstore.domain.BoughtBook;
 import pl.mh.bookstore.domain.User;
 import pl.mh.bookstore.service.OrderService;
 import pl.mh.bookstore.service.UserService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class ShoppingCartController {
@@ -59,6 +63,17 @@ public class ShoppingCartController {
         else {
             orderService.checkout();
         }
+        return "redirect:/shoppingCart/orderDetails";
+    }
+
+    @GetMapping("/shoppingCart/orderDetails")
+    public String getOrderDetails(Model model) {
+        Set<BoughtBook> boughtBooks = new HashSet<>(orderService.boughtBooks());
+        model.addAttribute("boughtBooks", boughtBooks);
+        model.addAttribute("booksCost", orderService.getTotal().toString());
+        model.addAttribute("shippingCost", orderService.getShippingCost().toString());
+        model.addAttribute("totalCost", orderService.getTotalWithShippingCost().toString());
+        orderService.clear();
         return "orderDetails";
     }
 }

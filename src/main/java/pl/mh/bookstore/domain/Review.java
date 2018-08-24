@@ -18,7 +18,7 @@ public class Review {
 
     private String text;
 
-    protected LocalDate date;
+    private LocalDate date;
 
     private String author;
 

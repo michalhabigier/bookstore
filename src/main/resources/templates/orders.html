@@ -13,30 +13,23 @@
 <body>
 <div th:include="fragments/header :: header"></div>
 <div class="container">
-    <h1 class="main">Order Details</h1>
+    <h1 class="main">List of Books</h1>
     <table class="table table-hover table-responsive">
         <tr>
-            <th>Author</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Quantity</th>
-            <th>Price</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Cost</th>
+            <th>Details</th>
         </tr>
-        <tr th:each="boughtBook : ${boughtBooks}">
-            <td th:text="${boughtBook.getBook().getTitle()}"></td>
-            <td th:text="${boughtBook.getBook().getAuthor()}"></td>
-            <td th:text="${boughtBook.getBook().getBookCategory()}"></td>
-            <td th:text="${boughtBook.getAmount()}"></td>
-            <td th:text="${boughtBook.getPrice()}"></td>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.getLocalDate()}"></td>
+            <td th:text="${order.getOrderStatus()}"></td>
+            <td th:text="${order.getTotalCost()}"></td>
+            <td><a type="submit" class="btn btn-success btn-xs" th:href="@{'/account/orders/' + ${order.id}}">Order
+                details</a></td>
         </tr>
     </table>
-    <a href="adminUsersList.html" class="btn btn-default btn-xs" th:href="@{/account/orders}">Go back to orders</a>
-</div>
-
-<div class="row panel-body pull-right">
-    <h4 class="col-md-11" style="padding: 0;" th:inline="text">Books Cost: [[${booksCost}]]</h4>
-    <h4 class="col-md-11" style="padding: 0;" th:inline="text">Shipping cost: [[${shippingCost}]]</h4>
-    <h3 class="col-md-11" style="padding: 0;" th:inline="text">Total: [[${totalCost}]]</h3>
+    <a href="account.html" class="btn btn-default btn-xs" th:href="@{/account}">Go back</a>
 </div>
 
 <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>

@@ -27,6 +27,8 @@ public class Order {
 
     private BigDecimal totalCost;
 
+    private BigDecimal shippingCost;
+
     private OrderStatus orderStatus;
 
     private Address shipmentAddress;
