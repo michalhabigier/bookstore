@@ -13,7 +13,7 @@ import pl.mh.bookstore.service.ReviewService;
 
 import javax.validation.Valid;
 
-@PreAuthorize("hasRole('ROLE_USER')")
+
 @Controller
 public class ReviewController {
 
@@ -23,6 +23,7 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/books/{id}")
     public String rate(@PathVariable("id") Long id, @ModelAttribute("review") @Valid ReviewDto reviewDto, BindingResult result){
         Book book = bookRepository.findById(id);

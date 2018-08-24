@@ -8,6 +8,5 @@ import pl.mh.bookstore.dto.UserDto;
 public interface UserService extends UserDetailsService {
     void save(UserDto userDto);
     User currentUser();
-
     void addAddress(Address addressDto);
 }

@@ -58,7 +58,6 @@ public class AccountController {
     public String addAddress(@ModelAttribute("newAddress") Address address, BindingResult result) {
         if (result.hasErrors())
             return "addressForm";
-
         userService.addAddress(address);
         return "redirect:/account";
     }

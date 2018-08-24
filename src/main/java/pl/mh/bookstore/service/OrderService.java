@@ -14,6 +14,5 @@ public interface OrderService {
     Set<BoughtBook> boughtBooks();
     void checkout();
     void cartContentCheck();
-
     void clear();
 }

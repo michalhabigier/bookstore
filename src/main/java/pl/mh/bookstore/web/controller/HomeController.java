@@ -29,7 +29,7 @@ public class HomeController {
         return "booksList";
     }
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String homePage(Model model){
         model.addAttribute("newest", bookRepository.findFirst3ByOrderByIdDesc());
         return "index";
