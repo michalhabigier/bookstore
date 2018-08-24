@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import pl.mh.bookstore.constants.Constants;
 import pl.mh.bookstore.domain.Book;
 import pl.mh.bookstore.domain.User;
 import pl.mh.bookstore.domain.enums.BookCategory;
@@ -29,7 +27,6 @@ public class AdminController {
 
     @Autowired
     private BookRepository bookRepository;
-
 
     @GetMapping("/admin/users")
     public String getAllUsers(Model model) {
@@ -91,4 +88,19 @@ public class AdminController {
         model.addAttribute("booksList", bookRepository.findAll());
         return "redirect:/admin/books";
     }
+
+    @GetMapping(value = "/admin/books/discount", params = "category")
+    public String setDiscountForSpecifiedBookType(Model model,
+                                                  @RequestParam(name = "category") BookCategory bookCategory) {
+        model.addAttribute("bookCategories", BookCategory.values());
+        bookRepository.specifiedBookCategoryPromotion(bookCategory, Constants.BOOK_DISCOUNT_BY_10_PERCENT);
+        return "redirect:/admin/books";
+    }
+
+    @GetMapping(value = "/admin/books/discount")
+    public String setNoVatDiscount() {
+        bookRepository.noVatPromotion(Constants.VAT);
+        return "redirect:/admin/books";
+    }
+
 }

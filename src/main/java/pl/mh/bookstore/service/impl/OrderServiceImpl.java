@@ -22,7 +22,6 @@ import pl.mh.bookstore.service.UserService;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
                 boughtBook.setPrice(boughtBook.getPrice().add(book.getPrice()));
                 log.debug("This book is already in cart. Amount incremented by 1 to {}", boughtBook.getAmount());
             }
-            decrementAmount(bookId);
+            bookRepository.decrementBookAmount(bookId);
         }
 
     }
@@ -74,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         Book book = bookRepository.findById(bookId);
         if(isInCart(book)){
             BoughtBook boughtBook = getBoughtBook(book);
-            incrementAmount(bookId);
+            bookRepository.incrementBookAmount(bookId, boughtBook.getAmount());
             boughtBooks.remove(boughtBook);
             log.debug("Deleted {} from cart", book.getAuthor() + " " + book.getTitle());
         }
@@ -112,18 +111,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Set<BoughtBook> boughtBooks() {
-        return Collections.unmodifiableSet(boughtBooks);
+        return boughtBooks;
     }
 
     public void checkout(){
         Order order = orderCreation();
+        orderRepository.save(order);
         boughtBooks().forEach(o -> o.setOrder(order));
         boughtBookRepository.save(boughtBooks());
         log.debug("Books have been successfully added to an order");
-        orderRepository.save(order);
-
         log.debug("Order with {} ID has been successfully added to database", order.getId());
-        boughtBooks.clear();
     }
 
     private Order orderCreation() {
@@ -134,6 +131,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setBoughtBooks(boughtBooks);
         order.setTotalCost(getTotalWithShippingCost());
+        order.setShippingCost(getShippingCost());
         order.setOrderStatus(OrderStatus.NOT_PAID);
         order.setShipmentAddress(user.getAddress());
         return order;
@@ -148,17 +146,7 @@ public class OrderServiceImpl implements OrderService {
         return bookRepository.findById(bookId).getQuantity() > 0;
     }
 
-    private void decrementAmount(long bookId) {
-        Book book = bookRepository.findById(bookId);
-        book.setQuantity(book.getQuantity() - 1);
-        bookRepository.save(book);
+    public void clear() {
+        boughtBooks.clear();
     }
-
-    private void incrementAmount(long bookId) {
-        Book book = bookRepository.findById(bookId);
-        int count = getBoughtBook(book).getAmount();
-        book.setQuantity(book.getQuantity() + count);
-        bookRepository.save(book);
-    }
-
 }
